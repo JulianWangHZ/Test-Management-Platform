@@ -1,0 +1,65 @@
+---
+description: i18n conventions for next-intl — adding, updating, and auditing translation keys
+globs:
+  - "messages/*.json"
+  - "src/**/*.tsx"
+  - "types/**/*.ts"
+alwaysApply: false
+---
+
+# i18n Rules (next-intl)
+
+5 locales that must always stay in sync: `en · de · ja · pt-BR · zh-CN`
+
+## The One Rule
+
+**Every key added to `messages/en.json` must be added to all 4 other locale files in the same operation.**
+A missing key causes a next-intl runtime crash.
+
+## Server / Client Pattern
+
+```tsx
+// page.tsx (server component) — only place useTranslations is called
+const t = useTranslations('MyFeature');
+const messages: MyFeatureMessages = {
+  title: t('title'),
+  createButton: t('createButton'),
+};
+return <MyFeatureClient messages={messages} />;
+```
+
+```tsx
+// MyFeatureClient.tsx (client component) — receives messages as props
+type Props = { messages: MyFeatureMessages };
+export default function MyFeatureClient({ messages }: Props) {
+  return <h1>{messages.title}</h1>;
+}
+```
+
+Never call `useTranslations` in a client component.
+
+## Type Pattern
+
+```ts
+// types/myFeature.ts
+export type MyFeatureMessages = {
+  title: string;
+  createButton: string;
+  emptyState: string;
+};
+```
+
+One Messages type per feature namespace. The type must exactly mirror the keys used in the server component.
+
+## Namespace Convention
+
+One namespace per feature/page, PascalCase:
+- `"ProjectHome"` · `"TestRun"` · `"RunEditor"` · `"Priority"` · `"RunCaseStatus"`
+
+Don't flatten everything into a generic `"Common"` or `"UI"` namespace — it becomes a dumping ground.
+
+## Never
+
+- Hardcode English strings in JSX — all user-visible copy goes through messages props
+- Add a key to `en.json` without propagating to all 4 other files
+- Use `t()` inside event handlers or `useEffect` — call `useTranslations` at the top of the server component and pass the result down

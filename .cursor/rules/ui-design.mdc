@@ -1,0 +1,115 @@
+---
+description: UI design system rules — colors, layout, components, spacing for Agentic QA
+globs:
+  - "src/**/*.tsx"
+  - "components/**/*.tsx"
+  - "src/**/*.css"
+alwaysApply: false
+---
+
+# UI Design Rules
+
+Design language: **precision-minimalist B2B tool** (Linear/Notion direction). No gradients, no glass, no decorative flourishes.
+
+## Surfaces
+
+| Surface | Class |
+|---|---|
+| Page background | `bg-[#f5f6f8]` |
+| Card / panel | `bg-white border border-gray-300` |
+| Sidebar | `bg-[#111111]` (only dark surface in the app) |
+| Sticky header | `bg-white border-b border-gray-200 shadow-sm sticky top-0 z-10` |
+
+## Border Radius
+
+- Entity cards (projects, runs): `rounded-2xl` — max allowed
+- Data panels, table wrappers: `rounded-xl`
+- Badges, pills, avatars: `rounded-full`
+- Never use `rounded-3xl` or above
+
+## Typography
+
+```
+Page title:      text-2xl font-bold text-gray-900
+Section header:  text-sm font-semibold text-gray-900
+Table headers:   text-xs font-semibold text-gray-600 uppercase tracking-wide
+Body:            text-sm text-gray-700
+Secondary/meta:  text-xs text-gray-500
+IDs / indexes:   text-xs font-mono text-gray-500
+```
+
+## Status Badges (exact classes — do not deviate)
+
+```tsx
+// Pass
+"bg-green-50 text-green-700 border border-green-200 rounded-full px-2.5 py-1 text-xs font-semibold"
+// Fail
+"bg-red-50 text-red-700 border border-red-200 ..."
+// Warn / Retest
+"bg-yellow-50 text-yellow-700 border border-yellow-200 ..."
+// Pending / Skip
+"bg-gray-100 text-gray-600 border border-gray-300 ..."
+```
+
+Status colors (green/amber/red) are reserved exclusively for pass/warn/fail. Never use them for decoration.
+
+## HeroUI Defaults
+
+```tsx
+<Input variant="bordered" size="sm" />       // ALL inputs
+<Select variant="bordered" size="sm" />      // ALL selects
+<Textarea variant="bordered" size="sm" />    // ALL textareas
+<Button size="sm" />                         // ALL buttons
+<Button size="sm" color="primary" />         // Primary CTA only
+<Modal placement="center" />                 // ALL modals
+```
+
+Custom `classNames` pattern for inputs:
+```tsx
+classNames={{
+  label: 'text-gray-700 font-medium',
+  inputWrapper: 'border-gray-300 hover:border-gray-400',
+}}
+```
+
+Never override border-radius on HeroUI components.
+
+## Icons
+
+Library: `lucide-react` only. Size conventions:
+- `size={11}` — fill icons in tight stat rows
+- `size={14}` — avatar-adjacent, dropdown chevrons
+- `size={16}` — standard inline icons
+- `size={17}` — sidebar navigation
+- `size={22}` — empty state illustrations
+
+Nav icons: `strokeWidth={2.2}` active, `strokeWidth={1.8}` inactive.
+
+## Layout
+
+```
+Page container:    max-w-6xl mx-auto px-6 py-8
+Card grid:         grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4
+Data panel grid:   grid grid-cols-1 md:grid-cols-2 gap-6
+Table wrapper:     bg-white border border-gray-300 rounded-xl overflow-hidden shadow-sm
+```
+
+## Interactions
+
+- Cards: `hover:border-gray-400 hover:shadow-md transition-all`
+- Table rows: `hover:bg-blue-50/30 transition-colors`
+- Elevation: `shadow-sm` static max, `shadow-md` hover max — never `shadow-lg+`
+
+## Avatars
+
+`boring-avatars` variant `"beam"` with palette `['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']`.
+Fallback: Lucide `<User>` icon.
+
+## Never
+
+- Gradients, glassmorphism, `backdrop-blur`
+- A second font family
+- `shadow-lg` or above on static elements
+- Status colors outside of badges / pass-rate
+- Hardcoded HeroUI primary blue hex — use `color="primary"` prop
+- Inline `style={{}}` for values with Tailwind equivalents (except dynamic widths)

@@ -1,0 +1,96 @@
+---
+description: TypeScript and React component conventions for Agentic QA
+globs:
+  - "src/**/*.ts"
+  - "src/**/*.tsx"
+  - "components/**/*.tsx"
+  - "types/**/*.ts"
+  - "utils/**/*.ts"
+alwaysApply: false
+---
+
+# TypeScript & Component Conventions
+
+## Types
+
+- Props as `type Props = {}`, not `interface` (interfaces are for extendable contracts)
+- No `any` — ever. Model the type instead.
+- Entity types in `types/` must mirror future API response shape — no UI-only fields on them
+- Messages types live in `types/` alongside their entity (e.g., `types/run.ts` has both `RunType` and `RunDetailMessages`)
+
+## Component File Structure
+
+```tsx
+'use client';                    // 1. directive (only if needed)
+
+import ...                      // 2. React → Next → 3rd party → @/types → @/utils → @/components
+
+type Props = { ... };           // 3. Props type
+
+export default function MyComp({ prop1, prop2 }: Props) {
+  // a. hooks (useState, useMemo, useEffect...)
+  // b. derived values (useMemo for filtered lists, computed labels)
+  // c. handlers (handleSubmit, handleDelete...)
+  // d. early returns (null guards, loading)
+  // e. JSX
+}
+
+function SubItem({ ... }: { ... }) { ... }   // 5. private sub-components (bottom of file)
+
+const helper = (x: number) => x * 2;        // 6. pure helpers (no hooks, not exported)
+```
+
+## State
+
+- `useState` for mutable state owned by the component
+- `useMemo` for derived/filtered data — never recompute in the render body
+- `useEffect` for URL param reading only; never for state-to-state sync
+- URL `searchParams` for tab selection and filter state (survives reload)
+
+## Patterns
+
+```tsx
+// Optional chaining — always
+member?.User?.username
+
+// Data access via hooks (not direct mockData imports)
+const project = useProject(Number(projectId));
+if (!project) return null;
+
+// useMemo for filtered/derived data
+const filtered = useMemo(
+  () => items.filter(i => i.name.includes(search)),
+  [items, search]
+);
+```
+
+## Imports
+
+Path alias `@/` always — never relative `../../..`.
+
+Import order:
+1. `react`
+2. `next/...`, `next-intl`
+3. Third-party (`@heroui/react`, `lucide-react`, `dayjs`...)
+4. `@/types/...`
+5. `@/hooks/...`
+6. `@/utils/...`, `@/config/...`
+7. `@/components/...`
+
+Named imports from HeroUI — never import `*`.
+
+## File Naming
+
+| Thing | Convention |
+|---|---|
+| Page (App Router) | `page.tsx`, `layout.tsx` |
+| Client component | `PascalCase.tsx` |
+| Utility / aggregate | `camelCase.ts` |
+| Type file | `camelCase.ts`, singular noun |
+
+## What Not to Add
+
+- No `console.log` in committed code
+- No `TODO` comments in JSX — use GitHub issues
+- No `as XType` casts to force invalid data through types
+- No default exports for types or utilities — named exports only

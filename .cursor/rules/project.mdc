@@ -1,0 +1,84 @@
+---
+description: Project architecture, stack, and data layer conventions for Agentic QA
+alwaysApply: true
+---
+
+# Agentic QA — Project Rules
+
+## After Every Code Change
+
+Run `npm run check` after editing any file and fix all errors before finishing.
+`npm run check` = `tsc --noEmit && next lint`
+Never leave type errors or lint warnings in a response. Zero errors is the only acceptable state.
+
+## Stack
+Next.js 14 App Router · TypeScript · Tailwind CSS · HeroUI · next-intl (5 locales) · lucide-react · boring-avatars · ApexCharts · dayjs
+
+## Architecture
+
+**Frontend-only right now; backend is coming as a separate external service.**
+
+- All data lives in `src/data/mockData.ts` — this is temporary scaffolding, not permanent
+- When the backend arrives, `getMock*` helpers will be replaced with API client calls; types stay the same
+- Never add Next.js API routes, server actions, or tRPC — the backend is external
+- Never add React Query / SWR / Zustand / Redux — not needed yet
+
+## Server / Client Split
+
+Every `page.tsx` is a server component. It only does three things:
+1. Extract route params
+2. Call `useTranslations` to build a typed messages object
+3. Pass that object as props to a `'use client'` sibling component
+
+```tsx
+// page.tsx — server only
+export default function Page({ params }) {
+  const t = useTranslations('MyFeature');
+  const messages: MyFeatureMessages = { title: t('title') };
+  return <MyFeatureClient projectId={params.projectId} messages={messages} />;
+}
+```
+
+Never call `useTranslations` in a client component.
+
+## Data Access Pattern
+
+**Always use hooks — never import mockData directly in components.**
+
+```ts
+// ✅ Read via hook
+import { useProject } from '@/hooks/useProject';
+import { useRuns } from '@/hooks/useRuns';
+const project = useProject(Number(projectId));
+const runs    = useRuns(Number(projectId));
+
+// ✅ Mutate (local state only)
+const [items, setItems] = useState<RunType[]>(initialRuns);
+setItems(prev => [...prev, newItem]);
+
+// ❌ Never — don't import mockData directly in a component
+import { getMockProject } from '@/src/data/mockData';
+```
+
+Hooks live in `hooks/use*.ts`. useMemo-wrapped, synchronous. When the backend arrives, only hooks change — components stay untouched.
+Types in `types/` represent the future API response shape. Never add UI-only fields to entity types.
+
+## Shared Utilities
+
+Never define the same helper function twice. Shared logic goes in `utils/`:
+- `rateColor(rate)` → `@/utils/rateColor` (used in 3+ pages, lives in utils once)
+
+If a helper is used in one file only, define it at the bottom of that file. When it's needed elsewhere, extract it to `utils/`.
+
+## Component Size Rule
+
+Components over ~150 lines that mix data loading + state + multiple UI sections must be split:
+- **Orchestrator** (~80–100 lines): hooks, state, handlers only — no large JSX blocks
+- **Section components** (e.g. `RunHeader`, `RunInfoCard`, `RunCaseTable`): pure presentational, typed props
+
+See `RunEditor.tsx` → `RunHeader/RunInfoCard/RunCaseTable` as the canonical reference.
+
+## i18n
+
+5 locales: `en · de · ja · pt-BR · zh-CN` — all must be updated together.
+Missing a key in any locale file causes a runtime crash.

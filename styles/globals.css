@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Remove ApexCharts bar chart gray hover background & crosshairs */
+.apexcharts-xcrosshairs,
+.apexcharts-ycrosshairs,
+.apexcharts-xcrosshairs-hidden,
+.apexcharts-ycrosshairs-hidden,
+.apexcharts-bar-hover-rect,
+.apexcharts-selection-rect,
+.apexcharts-canvas rect.apexcharts-active-shape {
+  display: none !important;
+  opacity: 0 !important;
+}
+/* Prevent bar series dimming when others are hovered */
+.apexcharts-series path.apexcharts-bar-area {
+  opacity: 1 !important;
+  transition: none !important;
+}
