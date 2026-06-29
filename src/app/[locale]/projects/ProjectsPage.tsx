@@ -5,6 +5,7 @@ import { Plus, Lock, Globe, Play, ChevronRight } from 'lucide-react';
 import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Textarea, Switch } from '@heroui/react';
 import { useProjects } from '@/hooks/useProjects';
 import { rateColor } from '@/utils/rateColor';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import type { ProjectType } from '@/types/project';
 import type { ProjectsMessages } from '@/types/project';
 import dayjs from 'dayjs';
@@ -57,6 +58,7 @@ export default function ProjectsPage({ locale, messages }: Props) {
           <img src="/favicon/icon.svg" width={22} height={22} alt="" />
           <span className="font-semibold text-sm text-gray-900 tracking-wide">Agentic QA</span>
         </div>
+        <LanguageSwitcher locale={locale} variant="light" />
       </header>
 
       <div className="max-w-6xl mx-auto px-6 py-8">

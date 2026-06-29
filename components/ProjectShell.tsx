@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, FlaskConical, ArrowLeft, Menu, X } from 'lucide-react';
 import { useProject } from '@/hooks/useProject';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 type Props = {
   children: React.ReactNode;
@@ -89,7 +90,10 @@ export default function ProjectShell({ children, locale, projectId }: Props) {
         ))}
       </nav>
 
-      <div className="px-3 pb-5 pt-3 border-t border-white/10">
+      <div className="px-3 pb-5 pt-3 border-t border-white/10 space-y-2">
+        <div className="px-3">
+          <LanguageSwitcher locale={locale} variant="dark" />
+        </div>
         <NavItem icon={ArrowLeft} label="All Projects" href={`/${locale}/projects`} onClick={close} />
       </div>
     </aside>
