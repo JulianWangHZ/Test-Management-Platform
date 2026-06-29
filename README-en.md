@@ -6,7 +6,7 @@
 
 ---
 
-## Screenshots
+## Overview
 
 | Projects | Project Dashboard |
 |---|---|
