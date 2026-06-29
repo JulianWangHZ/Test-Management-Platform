@@ -18,17 +18,6 @@
 
 ---
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Current Features](#current-features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Roadmap](#roadmap)
-
----
-
 ## Overview
 
 Test management in most teams is fragmented — spreadsheets, Notion docs, or heavyweight tools that don't fit agile workflows. Agentic QA aims to be the lightweight, extensible alternative: fast to set up, easy to navigate, and built to grow with your team.
@@ -56,29 +45,9 @@ The current version is a **frontend-only prototype** with realistic mock data. T
 - Change history log
 - Assignee picker with search
 
-### Team Members
-- View project members with role and avatar
-
 ### Internationalization
 - Full UI in **English** and **Traditional Chinese**
 - Next-intl App Router integration — locale is part of the URL path (`/en/...`, `/zh-TW/...`)
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 14 (App Router) |
-| Language | TypeScript |
-| Styling | Tailwind CSS |
-| UI Components | HeroUI |
-| i18n | next-intl |
-| Charts | ApexCharts |
-| Date handling | dayjs |
-| Avatars | boring-avatars |
-| Icons | lucide-react |
-| Deployment | Vercel |
 
 ---
 
