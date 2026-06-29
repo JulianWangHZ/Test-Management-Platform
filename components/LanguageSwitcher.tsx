@@ -1,7 +1,8 @@
 'use client';
 
-import { usePathname } from '@/src/i18n/routing';
+import { usePathname } from 'next/navigation';
 import { Link } from '@/src/i18n/routing';
+import { routing } from '@/src/i18n/routing';
 
 type Props = {
   locale: string;
@@ -13,8 +14,17 @@ const LOCALES = [
   { code: 'zh-TW', label: '中' },
 ] as const;
 
+function stripLocale(pathname: string): string {
+  for (const locale of routing.locales) {
+    if (pathname.startsWith(`/${locale}/`)) return pathname.slice(`/${locale}`.length);
+    if (pathname === `/${locale}`) return '/';
+  }
+  return pathname;
+}
+
 export default function LanguageSwitcher({ locale, variant = 'light' }: Props) {
-  const pathname = usePathname();
+  const fullPathname = usePathname();
+  const pathname = stripLocale(fullPathname);
 
   const activeClass = variant === 'dark' ? 'text-white font-semibold' : 'text-gray-900 font-semibold';
   const inactiveClass = variant === 'dark'

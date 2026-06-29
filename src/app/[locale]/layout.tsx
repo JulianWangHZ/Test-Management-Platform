@@ -28,7 +28,6 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <head />
       <body className={clsx('bg-white font-sans antialiased', fontSans.variable)}>
         <NextIntlClientProvider messages={messages}>
           <Providers themeProps={{ attribute: 'class', defaultTheme: 'light' }}>
