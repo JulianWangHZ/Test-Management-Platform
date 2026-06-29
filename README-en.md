@@ -42,7 +42,6 @@ The current version is a **frontend-only prototype** with realistic mock data. T
 ### Test Case Detail (inside a Run)
 - Full case detail view with description, steps, preconditions, and expected result
 - Inline comments with edit and delete
-- Change history log
 - Assignee picker with search
 
 ### Internationalization
