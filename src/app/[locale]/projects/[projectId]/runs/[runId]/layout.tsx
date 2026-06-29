@@ -4,6 +4,7 @@ import { RunMessages } from '@/types/run';
 import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
 
 export default function RunLayout({
+  children,
   params: { projectId, runId, locale },
 }: {
   children: React.ReactNode;
@@ -78,13 +79,16 @@ export default function RunLayout({
   };
 
   return (
-    <RunEditor
-      projectId={projectId}
-      runId={runId}
-      messages={messages}
-      runStatusMessages={runStatusMessages}
-      testRunCaseStatusMessages={testRunCaseStatusMessages}
-      locale={locale}
-    />
+    <>
+      <RunEditor
+        projectId={projectId}
+        runId={runId}
+        messages={messages}
+        runStatusMessages={runStatusMessages}
+        testRunCaseStatusMessages={testRunCaseStatusMessages}
+        locale={locale}
+      />
+      {children}
+    </>
   );
 }
