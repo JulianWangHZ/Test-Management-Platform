@@ -1,76 +1,72 @@
-# Agentic QA — 測試管理平台
+# Agentic QA — Test Management Platform
 
-> 🌐 [English README](./README-en.md)
+> 🇹🇼 [繁體中文版 README](./README-zh.md)
 
-**Agentic QA** 是一套專為 QA 工程師與開發團隊設計的現代化測試案例管理平台。介面以生產力為優先，提供清晰的專案結構、測試執行追蹤與品質指標可視化，並從架構層面為未來的 AI 驅動後端預留擴充空間。
+**Agentic QA** is a modern test case management platform built for QA engineers and development teams. It provides a clean, productivity-focused interface to organize test cases, track test runs, and measure quality across multiple projects — designed with a future AI-powered backend in mind.
 
 ---
 
-## 概覽
+## Overview
 
-| 專案列表 | 專案儀表板 |
+Test management in most teams is fragmented — spreadsheets, Notion docs, or heavyweight tools that don't fit agile workflows. Agentic QA aims to be the lightweight, extensible alternative: fast to set up, easy to navigate, and built to grow with your team.
+
+The current version is a **frontend-only prototype** with realistic mock data. The architecture is deliberately backend-ready — data access is fully abstracted behind a hooks layer so the swap from mock data to a real API will be a mechanical replacement, not a refactor.
+
+| Projects | Project Dashboard |
 |---|---|
 | ![Projects](./public/screenshots/projects.png) | ![Dashboard](./public/screenshots/dashboard.png) |
 
-| 測試執行編輯器 | 測試案例詳情 |
+| Test Run Editor | Case Detail |
 |---|---|
 | ![Run Editor](./public/screenshots/run-editor.png) | ![Case Detail](./public/screenshots/case-detail.png) |
 
 ---
 
-## 專案簡介
+## Current Features
 
-大多數團隊的測試管理是零散的 — 試算表、Notion 文件，或是過於龐大而不符合敏捷節奏的工具。Agentic QA 的目標是成為輕量、可擴充的替代方案：快速建立、易於導覽，且能隨團隊規模成長。
+### Project Management
+- Create and manage multiple projects with public/private visibility
+- Per-project dashboard with pass rate charts and test run summary
+- Most-failing cases panel for quick triage
 
-目前版本為**純前端原型**，搭配真實情境的 Mock 資料。架構上已為後端整合預做設計 — 資料存取完全抽象在 hooks 層之後，未來從 Mock 切換至真實 API 只需替換 hooks，不需改動任何元件。
+### Test Run Management
+- Create test runs scoped to a project
+- Assign test cases to team members
+- Track status per case: **Passed**, **Failed**, **Retest**, **Skipped**, **Untested**
+- Run-level progress donut chart and overall pass rate
 
----
+### Test Case Detail (inside a Run)
+- Full case detail view with description, steps, preconditions, and expected result
+- Inline comments with edit and delete
+- Assignee picker with search
 
-## 目前功能
-
-### 專案管理
-- 建立並管理多個專案，支援公開 / 私有可見性設定
-- 每個專案的儀表板，含通過率圖表與測試執行摘要
-- 失敗率最高的測試案例面板，方便快速分流問題
-
-### 測試執行管理
-- 在專案下建立測試執行（Test Run）
-- 將測試案例指派給團隊成員
-- 逐案追蹤狀態：**通過**、**失敗**、**重測**、**略過**、**未測試**
-- 執行層級的甜甜圈進度圖與整體通過率
-
-### 測試案例詳情（執行中）
-- 完整案例檢視，含描述、步驟、前置條件與預期結果
-- 即時新增、編輯、刪除評論
-- 指派人選擇器（含搜尋）
-
-### 多語言支援
-- 完整介面支援**英文**與**繁體中文**
-- 基於 next-intl App Router 整合，語言代碼包含於路徑中（`/en/...`、`/zh-TW/...`）
+### Internationalization
+- Full UI in **English** and **Traditional Chinese**
+- Next-intl App Router integration — locale is part of the URL path (`/en/...`, `/zh-TW/...`)
 
 ---
 
-## 專案架構
+## Project Structure
 
 ```
 agentic-qa-tcmp/
 ├── src/
-│   ├── app/[locale]/               # App Router — 所有路由以 locale 為前綴
-│   │   ├── layout.tsx              # 根佈局（HeroUI provider、i18n）
-│   │   ├── page.tsx                # 重新導向至 /projects
-│   │   ├── not-found.tsx           # 404 頁面
-│   │   ├── loading.tsx             # 全域載入狀態
-│   │   ├── error.tsx               # 全域錯誤邊界
+│   ├── app/[locale]/               # App Router — all routes are locale-prefixed
+│   │   ├── layout.tsx              # Root layout (HeroUI provider, i18n)
+│   │   ├── page.tsx                # Redirects → /projects
+│   │   ├── not-found.tsx           # 404 page
+│   │   ├── loading.tsx             # Global loading state
+│   │   ├── error.tsx               # Global error boundary
 │   │   └── projects/
-│   │       ├── page.tsx            # Server shell — 建立 i18n messages
-│   │       ├── ProjectsPage.tsx    # Client — 專案列表 + 建立 Modal
+│   │       ├── page.tsx            # Server shell — builds i18n messages
+│   │       ├── ProjectsPage.tsx    # Client — project grid + create modal
 │   │       └── [projectId]/
-│   │           ├── layout.tsx      # 側邊欄導覽
-│   │           ├── home/           # 專案儀表板（圖表、統計）
-│   │           ├── runs/           # 測試執行清單
+│   │           ├── layout.tsx      # Sidebar navigation
+│   │           ├── home/           # Project dashboard (charts, stats)
+│   │           ├── runs/           # Test run list
 │   │           │   ├── page.tsx
 │   │           │   ├── RunsPage.tsx
-│   │           │   └── [runId]/    # 執行編輯器（案例表 + 詳情面板）
+│   │           │   └── [runId]/    # Run editor (case table + detail pane)
 │   │           │       ├── layout.tsx
 │   │           │       ├── RunEditor.tsx
 │   │           │       ├── RunCaseTable.tsx
@@ -80,53 +76,53 @@ agentic-qa-tcmp/
 │   │           │           ├── page.tsx
 │   │           │           ├── DetailPane.tsx
 │   │           │           └── CaseDetail.tsx
-│   │           └── members/        # 專案成員清單
+│   │           └── members/        # Project member list
 │   ├── data/
-│   │   └── mockData.ts             # 種子資料 — 後端就緒後替換為 API 呼叫
+│   │   └── mockData.ts             # Seed data — replaced by API when backend is ready
 │   └── i18n/
-│       ├── routing.ts              # 支援語言 + 預設語言
-│       └── request.ts              # next-intl 伺服器設定
-├── hooks/                          # 資料存取層（抽象 Mock → 未來 API）
+│       ├── routing.ts              # Supported locales + default locale
+│       └── request.ts              # next-intl server config
+├── hooks/                          # Data access layer (abstracts mock → future API)
 │   ├── useProject.ts
 │   ├── useProjects.ts
 │   ├── useRun.ts
 │   ├── useRuns.ts
 │   └── useCases.ts
-├── types/                          # TypeScript 型別（對齊未來 API 回傳結構）
-├── components/                     # 共用 UI 元件
+├── types/                          # TypeScript types (mirrors future API shape)
+├── components/                     # Shared UI components
 │   ├── UserAvatar.tsx
 │   ├── Comments.tsx
 │   ├── History.tsx
 │   ├── TestCasePriority.tsx
 │   └── ProjectShell.tsx
-├── utils/                          # 純工具函式
-│   ├── rateColor.ts                # 通過率 → 顏色閾值
+├── utils/                          # Pure utility functions
+│   ├── rateColor.ts                # Pass rate → color threshold
 │   ├── formGuard.ts
 │   └── errorHandler.ts
-├── messages/                       # i18n 翻譯檔
+├── messages/                       # i18n translation files
 │   ├── en.json
 │   └── zh-TW.json
-└── Dockerfile / docker-compose.yml # 可選：無需安裝 Node.js 的本地開發環境
+└── Dockerfile / docker-compose.yml # Optional local dev without Node.js
 ```
 
-### 架構原則
+### Architecture Principles
 
-**Server / Client 分離** — 每個 `page.tsx` 都是 Server Component，只負責擷取路由參數、呼叫 `useTranslations`，並將型別化的 messages props 傳給同層的 Client Component。`useTranslations` 永遠不在客戶端執行。
+**Server / Client split** — Every `page.tsx` is a server component. It extracts route params, calls `useTranslations`, and passes typed message props down to a sibling client component. No `useTranslations` ever runs on the client.
 
-**Hooks 層** — 元件不直接引用 `mockData.ts`。所有資料讀取都透過 `hooks/` 進行。後端到位後只需更換 hooks 實作，元件零改動。
+**Hooks layer** — Components never import from `mockData.ts` directly. All data reads go through `hooks/`. When the backend lands, only the hooks change — zero component rewrites.
 
-**URL 驅動狀態** — 頁籤選擇與篩選條件存在 URL search params，而非 React state。頁面可加入書籤，符合 B2B 工具使用者的預期行為。
+**URL-driven state** — Tab selection and filters live in URL search params, not React state. Pages are bookmarkable and consistent with B2B user expectations.
 
 ---
 
-## 本地啟動
+## Getting Started
 
-### 前置需求
+### Prerequisites
 
-- Node.js 18 以上
+- Node.js 18 or above
 - npm
 
-### 安裝與執行
+### Install & Run
 
 ```bash
 git clone https://github.com/JulianWangHZ/Test-Management-Platform.git
@@ -135,44 +131,44 @@ npm install
 npm run dev
 ```
 
-開啟 [http://localhost:3000](http://localhost:3000)。
+Open [http://localhost:3000](http://localhost:3000).
 
-### Docker（無需安裝 Node.js）
+### Docker (no Node.js required)
 
 ```bash
 docker-compose up
 ```
 
-開啟 [http://localhost:3000](http://localhost:3000)。
+Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## 功能藍圖
+## Roadmap
 
-平台設計為分階段擴充，以下是規劃方向，優先順序將依團隊需求調整。
+The platform is designed to grow in phases. Below is the planned direction — features will be prioritised based on team needs.
 
-### Phase 1 — 後端整合
+### Phase 1 — Backend Integration
 
-前端已針對未來 REST API 預先塑形，替換 Mock 層是第一個里程碑。
+The frontend is already shaped around a future REST API. Replacing the mock layer is the first milestone.
 
-- 外部後端服務（REST API）
-- JWT 認證 — 登入 / 註冊 / SSO
-- PostgreSQL 資料庫與 Migration
-- 角色權限控制（管理員、Manager、Developer、Reporter）
-- WebSocket 即時同步執行狀態
+- External backend service (REST API)
+- JWT-based authentication — sign in / sign up / SSO
+- PostgreSQL database with migrations
+- Role-based access control (Admin, Manager, Developer, Reporter)
+- Real-time run status updates via WebSocket
 
-### Phase 2 — 進階測試管理
+### Phase 2 — Advanced Test Management
 
-- **測試案例匯入 / 匯出** — Excel（xlsx）、CSV、Jira
-- **CI/CD 整合** — 透過 Webhook 從 GitHub Actions、Jenkins 等 Pipeline 推送執行結果
-- **批次操作** — 跨資料夾複製、移動、標記測試案例
-- **資料夾與標籤管理** — 階層式案例組織架構與自訂標籤
-- **不穩定測試偵測** — 標記在多次執行中結果不一致的案例
+- **Test case import / export** — Excel (xlsx), CSV, Jira
+- **CI/CD integration** — Push run results from GitHub Actions, Jenkins, or any pipeline via webhook
+- **Bulk operations** — Clone, move, tag test cases across folders
+- **Folder & tag management** — Hierarchical case organisation with custom tags
+- **Flaky test detection** — Flag cases that inconsistently pass or fail across runs
 
-### Phase 3 — 裝置與環境監控
+### Phase 3 — Device & Environment Monitoring
 
-- **裝置矩陣** — 追蹤各瀏覽器、作業系統、螢幕尺寸與裝置類型的測試結果
-- **環境管理** — 為每次執行定義測試環境（Staging、QA、Production）
-- **相容性視圖** — 視覺化呈現裝置矩陣的通過 / 失敗覆蓋率
-- **截圖與影片附件** — 為失敗案例附上佐證資料
+- **Device matrix** — Track test results per browser, OS, screen size, and device type
+- **Environment management** — Define staging, QA, production environments per run
+- **Compatibility view** — Visualise pass/fail coverage across the device matrix
+- **Screenshot & video attachments** — Attach evidence to failed cases
 
